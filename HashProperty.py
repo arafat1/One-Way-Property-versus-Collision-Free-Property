@@ -35,6 +35,7 @@ class HashPropety:
        print '\nDuplicate Message = %-27s     Corresponding Hash = %32s'  % (str(randomString), str(duplicateHash))
        print '\nNumber Of Iterations = %d' % count
 
+   #Collission free property is comparitvely easy to break as it becomes a birthday attack problem
    def collision_free_property(self):
         HashesExplored = dict()
         count = 0
@@ -56,7 +57,7 @@ class HashPropety:
 
 #Run multiple times and report average
 if __name__ == "__main__":
-    lenthOfHashValue = 6
+    lenthOfHashValue = 5
     _break = HashPropety(lenthOfHashValue)
     print "ONE WAY PROPERTY:"
     _break.one_way_property("Breaking one way property")
