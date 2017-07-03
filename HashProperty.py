@@ -57,7 +57,7 @@ class HashPropety:
 
 #Run multiple times and report average
 if __name__ == "__main__":
-    lenthOfHashValue = 5
+    lenthOfHashValue = 5    #Beyond 6 it may run for around 10 mins for one way property
     _break = HashPropety(lenthOfHashValue)
     print "ONE WAY PROPERTY:"
     _break.one_way_property("Breaking one way property")
