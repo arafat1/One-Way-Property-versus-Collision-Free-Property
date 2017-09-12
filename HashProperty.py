@@ -1,10 +1,11 @@
 import hashlib
-import random
 import string
+import time
+import random
 from random import randint
 
 class HashPropety:
-   def __init__(self, b=4):
+   def __init__(self, b=5):
        self.bits = b            # Number of hex bits to match
 
    def generate_hash(self, msg):
@@ -15,21 +16,21 @@ class HashPropety:
        return m.hexdigest()
 
    def generate_string(self, length):
-       return ''.join(random.choice(string.ascii_letters) for i in range(length))
+       return ''.join(random.choice(string.ascii_letters + string.punctuation) for i in range(length))
 
    def one_way_property(self, msg):
        orignalMessage = msg
        originalHash = self.generate_hash(orignalMessage)
-       originalHash_6bits = originalHash[0:self.bits]   # 1 hex bit = 4 binary bits
-       duplicateHash_6bits = None                       # n hex bits = n * 4 bits
+       originalHash_nbits = originalHash[0:self.bits]   # 1 hex bit = 4 binary bits
+       duplicateHash_nbits = None                       # n hex bits = n * 4 bits
        count = 0
 
-       while (originalHash_6bits != duplicateHash_6bits):
+       while (originalHash_nbits != duplicateHash_nbits):
            count += 1
            lengthOfString = randint(1, 26)                           #Max length of string = 26
            randomString = self.generate_string(lengthOfString)
            duplicateHash = self.generate_hash(randomString)
-           duplicateHash_6bits = duplicateHash[0:self.bits]          #Extract first 6 hex bits of hash
+           duplicateHash_nbits = duplicateHash[0:self.bits]          #Extract first n hex bits of hash
 
        print '\nOriginal Message = %-27s      Corresponding Hash = %32s' % (str(orignalMessage), str(originalHash))
        print '\nDuplicate Message = %-27s     Corresponding Hash = %32s'  % (str(randomString), str(duplicateHash))
@@ -45,22 +46,24 @@ class HashPropety:
             lengthOfString = (randint(1, 26))
             randomMessage = self.generate_string(lengthOfString)
             duplicateHash = self.generate_hash(randomMessage)
-            duplicateHash_6bits = duplicateHash[0:self.bits]
+            duplicateHash_nbits = duplicateHash[0:self.bits]
 
-            if duplicateHash_6bits in HashesExplored and HashesExplored[duplicateHash_6bits] != randomMessage:
-                collidingHash = self.generate_hash(HashesExplored[duplicateHash_6bits])
+            if duplicateHash_nbits in HashesExplored and HashesExplored[duplicateHash_nbits] != randomMessage:
+                collidingHash = self.generate_hash(HashesExplored[duplicateHash_nbits])
                 print '\nMessage1 = %-27s     Corresponding Hash = %32s' % (randomMessage, str(duplicateHash))
-                print '\nMessage2 = %-27s     Corresponding Hash = %32s' % (HashesExplored[duplicateHash_6bits], str(collidingHash))
+                print '\nMessage2 = %-27s     Corresponding Hash = %32s' % (HashesExplored[duplicateHash_nbits], str(collidingHash))
                 print '\nNumber Of Iterations = %d' % count
                 break
-            HashesExplored[duplicateHash_6bits] = randomMessage
+            HashesExplored[duplicateHash_nbits] = randomMessage
 
 #Run multiple times and report average
 if __name__ == "__main__":
-    lenthOfHashValue = 5    #Beyond 6 it may run for around 10 mins for one way property
+    startTime = time.time()
+    lenthOfHashValue = 5    #Beyond 6 it may run for around 15 mins for one way property
     _break = HashPropety(lenthOfHashValue)
     print "ONE WAY PROPERTY:"
     _break.one_way_property("Breaking one way property")
     print "\n---------------------------------------------------------------------------------------------\n"
     print "COLLISION FREE PROPERTY:"
     _break.collision_free_property()
+    print time.time() - startTime
